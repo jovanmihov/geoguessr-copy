@@ -1,0 +1,55 @@
+:root {
+  --color-bg-start: #1a1033;
+  --color-bg-end: #0d0920;
+  --color-surface: rgba(255, 255, 255, 0.06);
+  --color-surface-border: rgba(255, 255, 255, 0.12);
+  --color-primary: #8b5cf6;
+  --color-primary-dark: #6d28d9;
+  --color-primary-light: #c4b5fd;
+  --color-accent: #fbbf24;
+  --color-text: #f5f3ff;
+  --color-text-muted: #b8adda;
+
+  --font-sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: radial-gradient(circle at 20% -10%, #3d2472 0%, transparent 55%),
+    radial-gradient(circle at 100% 0%, #4c1d95 0%, transparent 45%),
+    linear-gradient(160deg, var(--color-bg-start) 0%, var(--color-bg-end) 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+}
+
+a {
+  color: var(--color-accent);
+}
