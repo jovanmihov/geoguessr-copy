@@ -6,12 +6,14 @@ import Map from "../components/Map";
 import calculateDistance from "../utils/calculateDistance";
 import type { Coordinates } from "../entities/Coordinates";
 import { randomCoordinates } from "../utils/randomCoords";
+import calculateScore from "../utils/calculateScore";
 
 const SKOPJE = {latitude: 41.9921, longitude: 21.4234};
 
 export default function Game() {
   const [targetLocation, setTargetLocation] = useState<Coordinates>(SKOPJE);
   const [distance, setDistance] = useState<number | null>(null);
+  const [score, setScore] = useState<number | null>(null);
 
   useEffect(() => {
     setTargetLocation(randomCoordinates())
@@ -20,6 +22,7 @@ export default function Game() {
   function handleSubmitGuess(coords: { latitude: number; longitude: number }) {
     const km = Number((Math.trunc(calculateDistance(coords, targetLocation))/1000).toFixed(2));
     setDistance(km);
+    setScore(calculateScore(km));
     console.log(`Distance: ${km} km`);
   }
 
@@ -31,6 +34,7 @@ export default function Game() {
       </Link>
       <Map submitGuess={handleSubmitGuess} targetLocation={targetLocation} />
       {distance !== null && <p>Distance: {distance} km</p>}
+      {score !== null && <p>Score: {score} points</p>}
     </div>
   );
 }
