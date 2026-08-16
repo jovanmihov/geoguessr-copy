@@ -21,7 +21,7 @@ const targetIcon = L.divIcon({
 
 const guessIcon = L.divIcon({
   className: "",
-  html: `<svg xmlns="http://www.w3.org/2000/svg" width="25" height="41" viewBox="0 0 25 41"><path fill="#8b5cf6" stroke="#4c1d95" stroke-width="1" d="M12.5 0C5.6 0 0 5.6 0 12.5 0 21 12.5 41 12.5 41S25 21 25 12.5C25 5.6 19.4 0 12.5 0z"/><circle cx="12.5" cy="12.5" r="5" fill="#fff"/></svg>`,
+  html: `<svg xmlns="http://www.w3.org/2000/svg" width="25" height="41" viewBox="0 0 25 41"><path fill="#d81f27" stroke="#9e1418" stroke-width="1" d="M12.5 0C5.6 0 0 5.6 0 12.5 0 21 12.5 41 12.5 41S25 21 25 12.5C25 5.6 19.4 0 12.5 0z"/><circle cx="12.5" cy="12.5" r="5" fill="#fff"/></svg>`,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [0, -41],

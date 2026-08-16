@@ -1,0 +1,62 @@
+.photo-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1; /* sits above the body gradient, below the page content */
+  overflow: hidden;
+  background: var(--color-bg-end);
+}
+
+.photo-bg__track {
+  display: flex;
+  height: 100%;
+  width: max-content;
+  animation-name: photo-slide;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.photo-bg__slide {
+  flex: 0 0 auto;
+  height: 100%;
+}
+
+.photo-bg__slide img {
+  display: block;
+  height: 100%;
+  width: auto; /* keep each photo's natural aspect ratio; strips sit edge-to-edge */
+  object-fit: cover;
+  user-select: none;
+}
+
+@keyframes photo-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%); /* one full set = seamless wrap */
+  }
+}
+
+/* Scrim: darken top and bottom for text legibility, plus a faint red wash to
+   tie the mismatched photos together with the flag palette. */
+.photo-bg__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(14, 10, 9, 0.62) 0%,
+      rgba(14, 10, 9, 0.32) 32%,
+      rgba(14, 10, 9, 0.5) 68%,
+      rgba(14, 10, 9, 0.92) 100%
+    ),
+    linear-gradient(0deg, rgba(158, 20, 24, 0.18), rgba(14, 10, 9, 0.3));
+}
+
+/* Respect users who ask their OS for reduced motion: hold on the first photo. */
+@media (prefers-reduced-motion: reduce) {
+  .photo-bg__track {
+    animation: none;
+  }
+}

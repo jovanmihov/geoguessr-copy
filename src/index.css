@@ -1,14 +1,14 @@
 :root {
-  --color-bg-start: #1a1033;
-  --color-bg-end: #0d0920;
+  --color-bg-start: #1c1412;
+  --color-bg-end: #0e0a09;
   --color-surface: rgba(255, 255, 255, 0.06);
   --color-surface-border: rgba(255, 255, 255, 0.12);
-  --color-primary: #8b5cf6;
-  --color-primary-dark: #6d28d9;
-  --color-primary-light: #c4b5fd;
-  --color-accent: #fbbf24;
-  --color-text: #f5f3ff;
-  --color-text-muted: #b8adda;
+  --color-primary: #d81f27;
+  --color-primary-dark: #9e1418;
+  --color-primary-light: #f4b840;
+  --color-accent: #f6c026;
+  --color-text: #fbf4ec;
+  --color-text-muted: #c9b6a4;
 
   --font-sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
 
@@ -29,8 +29,8 @@ body {
 body {
   font-family: var(--font-sans);
   color: var(--color-text);
-  background: radial-gradient(circle at 20% -10%, #3d2472 0%, transparent 55%),
-    radial-gradient(circle at 100% 0%, #4c1d95 0%, transparent 45%),
+  background: radial-gradient(circle at 20% -10%, #3a1512 0%, transparent 55%),
+    radial-gradient(circle at 100% 0%, #4a1418 0%, transparent 45%),
     linear-gradient(160deg, var(--color-bg-start) 0%, var(--color-bg-end) 100%);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;

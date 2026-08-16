@@ -1,11 +1,14 @@
 import TopScores from "../components/TopScores";
 import StartGameButton from "../components/StartGameButton";
 import OptionsButton from "../components/OptionsButton";
+import PhotoBackground from "../components/PhotoBackground";
 import "./Home.css";
 
 export default function Home() {
   return (
-    <div className="home">
+    <>
+      <PhotoBackground />
+      <div className="home">
       <h1 className="home__title">Welcome to Macedonian GeoGuessr</h1>
       <p className="home__subtitle">
         Guess the location, score points, and climb the leaderboard.
@@ -17,6 +20,7 @@ export default function Home() {
       <div className="home__scores">
         <TopScores />
       </div>
-    </div>
+      </div>
+    </>
   )
 }
