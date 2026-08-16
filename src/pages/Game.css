@@ -14,7 +14,7 @@
   gap: 0.75rem;
   padding: 0.4rem 0.5rem;
   border-radius: 999px;
-  background: rgba(13, 9, 32, 0.55);
+  background: rgba(14, 10, 9, 0.55);
   border: 1px solid var(--color-surface-border);
   backdrop-filter: blur(10px);
 }
@@ -52,7 +52,7 @@
   position: fixed;
   inset: 0;
   z-index: 0;
-  background: #0d0920;
+  background: #0e0a09;
 }
 
 /* ---------- Loading screen (while snapping to Street View) ---------- */
@@ -65,7 +65,7 @@
   align-items: center;
   justify-content: center;
   gap: 1.25rem;
-  background: radial-gradient(circle at 50% 40%, #1a1140 0%, #0d0920 70%);
+  background: radial-gradient(circle at 50% 40%, #2a1310 0%, #0e0a09 70%);
   color: var(--color-text-muted);
   font-size: 1.05rem;
   font-weight: 600;
@@ -192,7 +192,7 @@
   margin-top: 0.6rem;
   padding: 0.55rem 0.65rem 0.55rem 1rem;
   border-radius: 0.9rem;
-  background: rgba(13, 9, 32, 0.72);
+  background: rgba(14, 10, 9, 0.72);
   border: 1px solid var(--color-surface-border);
   backdrop-filter: blur(8px);
 }
@@ -247,7 +247,7 @@
   text-align: center;
   padding: 1.75rem 1.75rem 1.5rem;
   border-radius: 1.25rem;
-  background: rgba(13, 9, 32, 0.86);
+  background: rgba(14, 10, 9, 0.86);
   border: 1px solid var(--color-surface-border);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(14px);
@@ -310,14 +310,14 @@
   font-weight: 700;
   color: var(--color-text);
   background: linear-gradient(120deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  box-shadow: 0 8px 20px rgba(109, 40, 217, 0.45);
+  box-shadow: 0 8px 20px rgba(158, 20, 24, 0.45);
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .game__continue:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 26px rgba(109, 40, 217, 0.6);
+  box-shadow: 0 12px 26px rgba(158, 20, 24, 0.6);
 }
 
 .game__continue:active {
@@ -333,7 +333,7 @@
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  background: rgba(13, 9, 32, 0.72);
+  background: rgba(14, 10, 9, 0.72);
   backdrop-filter: blur(6px);
   animation: overlay-fade 0.25s ease;
 }
@@ -352,7 +352,7 @@
   text-align: center;
   padding: 2rem 1.75rem 1.75rem;
   border-radius: 1.25rem;
-  background: rgba(13, 9, 32, 0.92);
+  background: rgba(14, 10, 9, 0.92);
   border: 1px solid var(--color-surface-border);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
   animation: card-pop 0.3s ease;
@@ -424,7 +424,7 @@
 
 .game__namecard-input:focus {
   border-color: var(--color-primary-light);
-  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.35);
+  box-shadow: 0 0 0 3px rgba(158, 20, 24, 0.35);
 }
 
 .game__namecard-input::placeholder {

@@ -31,7 +31,7 @@
 
 .top-scores__search:focus {
   border-color: var(--color-primary-light);
-  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.3);
+  box-shadow: 0 0 0 3px rgba(158, 20, 24, 0.3);
 }
 
 .top-scores__search::placeholder {
