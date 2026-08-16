@@ -10,8 +10,7 @@ import { randomCoordinates } from "../utils/randomCoords";
 import nearestStreetView from "../utils/nearestStreetView";
 import calculateScore from "../utils/calculateScore";
 import type { Score } from "../entities/Score";
-
-const TOTAL_ROUNDS = 5;
+import { loadGameOptions } from "../utils/gameOptions";
 
 type RoundResult = { distance: number; score: number };
 
@@ -38,6 +37,7 @@ async function findStreetViewLocation(): Promise<Coordinates> {
 
 export default function Game() {
   const navigate = useNavigate();
+  const [totalRounds] = useState(() => loadGameOptions().rounds);
   const [round, setRound] = useState(1);
   const [totalScore, setTotalScore] = useState(0);
   const [targetLocation, setTargetLocation] = useState<Coordinates | null>(null);
@@ -46,7 +46,7 @@ export default function Game() {
   const [playerName, setPlayerName] = useState("");
 
   const isResult = result !== null;
-  const isLastRound = round >= TOTAL_ROUNDS;
+  const isLastRound = round >= totalRounds;
 
   useEffect(() => {
     let active = true;
@@ -98,7 +98,7 @@ export default function Game() {
           ← Quit
         </Link>
         <span className="game__hud-pill">
-          Round <strong>{round}</strong> / {TOTAL_ROUNDS}
+          Round <strong>{round}</strong> / {totalRounds}
         </span>
         <span className="game__hud-pill">
           Score <strong>{totalScore}</strong>
@@ -129,7 +129,7 @@ export default function Game() {
 
       {isResult && result && !showNameDialog && (
         <div className="game__result" role="dialog" aria-live="polite">
-          <p className="game__result-eyebrow">Round {round} of {TOTAL_ROUNDS}</p>
+          <p className="game__result-eyebrow">Round {round} of {totalRounds}</p>
           <p className="game__result-score">
             +{result.score} <span>pts</span>
           </p>
