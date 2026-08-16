@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import "./Game.css";
@@ -9,10 +9,24 @@ import type { Coordinates } from "../entities/Coordinates";
 import { randomCoordinates } from "../utils/randomCoords";
 import nearestStreetView from "../utils/nearestStreetView";
 import calculateScore from "../utils/calculateScore";
+import type { Score } from "../entities/Score";
 
 const TOTAL_ROUNDS = 5;
 
 type RoundResult = { distance: number; score: number };
+
+function loadStoredScores(): Score[] {
+  const stored = localStorage.getItem("topScores");
+  if (!stored) return [];
+  try {
+    const parsed = JSON.parse(stored) as (Score | number)[];
+    return parsed.map((entry) =>
+      typeof entry === "number" ? { name: "Anonymous", score: entry } : entry
+    );
+  } catch {
+    return [];
+  }
+}
 
 async function findStreetViewLocation(): Promise<Coordinates> {
   for (let attempt = 0; attempt < 60; attempt++) {
@@ -28,6 +42,8 @@ export default function Game() {
   const [totalScore, setTotalScore] = useState(0);
   const [targetLocation, setTargetLocation] = useState<Coordinates | null>(null);
   const [result, setResult] = useState<RoundResult | null>(null);
+  const [showNameDialog, setShowNameDialog] = useState(false);
+  const [playerName, setPlayerName] = useState("");
 
   const isResult = result !== null;
   const isLastRound = round >= TOTAL_ROUNDS;
@@ -42,10 +58,11 @@ export default function Game() {
     };
   }, []);
 
-  function saveTopScore(total: number) {
-    const stored = localStorage.getItem("topScores");
-    const scores: number[] = stored ? JSON.parse(stored) : [0, 0, 0];
-    const updated = [...scores, total].sort((a, b) => b - a).slice(0, 3);
+  function saveTopScore(name: string, total: number) {
+    const scores = loadStoredScores();
+    const updated = [...scores, { name, score: total }].sort(
+      (a, b) => b.score - a.score
+    );
     localStorage.setItem("topScores", JSON.stringify(updated));
   }
 
@@ -59,14 +76,19 @@ export default function Game() {
 
   function handleContinue() {
     if (isLastRound) {
-      saveTopScore(totalScore);
-      navigate("/");
+      setShowNameDialog(true);
       return;
     }
     setRound((prev) => prev + 1);
     setResult(null);
     setTargetLocation(null);
     findStreetViewLocation().then(setTargetLocation);
+  }
+
+  function handleSaveScore(event: FormEvent) {
+    event.preventDefault();
+    saveTopScore(playerName.trim() || "Anonymous", totalScore);
+    navigate("/");
   }
 
   return (
@@ -105,7 +127,7 @@ export default function Game() {
         </>
       )}
 
-      {isResult && result && (
+      {isResult && result && !showNameDialog && (
         <div className="game__result" role="dialog" aria-live="polite">
           <p className="game__result-eyebrow">Round {round} of {TOTAL_ROUNDS}</p>
           <p className="game__result-score">
@@ -118,6 +140,41 @@ export default function Game() {
           <button className="game__continue" onClick={handleContinue}>
             {isLastRound ? "Finish & save score" : "Continue →"}
           </button>
+        </div>
+      )}
+
+      {showNameDialog && (
+        <div
+          className="game__overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="game-over-title"
+        >
+          <form className="game__namecard" onSubmit={handleSaveScore}>
+            <p className="game__namecard-eyebrow">Game over</p>
+            <h2 id="game-over-title" className="game__namecard-title">
+              Final score
+            </h2>
+            <p className="game__namecard-score">
+              {totalScore} <span>pts</span>
+            </p>
+            <label className="game__namecard-label" htmlFor="player-name">
+              Enter your name for the leaderboard
+            </label>
+            <input
+              id="player-name"
+              className="game__namecard-input"
+              type="text"
+              value={playerName}
+              onChange={(event) => setPlayerName(event.target.value)}
+              placeholder="Your name"
+              maxLength={20}
+              autoFocus
+            />
+            <button type="submit" className="game__continue">
+              Save score →
+            </button>
+          </form>
         </div>
       )}
     </div>
