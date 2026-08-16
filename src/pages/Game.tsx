@@ -6,13 +6,31 @@ import Map from "../components/Map";
 import StreetView from "../components/StreetView";
 import calculateDistance from "../utils/calculateDistance";
 import type { Coordinates } from "../entities/Coordinates";
-import { randomCoordinates } from "../utils/randomCoords";
+import { randomCoordinatesForDifficulty } from "../utils/randomCoords";
 import nearestStreetView from "../utils/nearestStreetView";
 import calculateScore from "../utils/calculateScore";
 import type { Score } from "../entities/Score";
+import type { Difficulty } from "../entities/GameOptions";
 import { loadGameOptions } from "../utils/gameOptions";
 
 type RoundResult = { distance: number; score: number };
+
+// Tighter tiers snap closer so an "easy" city-centre round can't drift out onto
+// a ring road; "hard" searches wide because rural coverage is sparse.
+const SNAP_RADIUS_METERS: Record<Difficulty, number> = {
+  easy: 100,
+  medium: 1000,
+  hard: 10000,
+};
+
+// Skopje's Macedonia Square — always has imagery, used only as a last resort.
+const FALLBACK_LOCATION: Coordinates = { latitude: 41.9965, longitude: 21.4314 };
+
+const DIFFICULTY_LABELS: Record<Difficulty, string> = {
+  easy: "Easy",
+  medium: "Medium",
+  hard: "Hard",
+};
 
 function loadStoredScores(): Score[] {
   const stored = localStorage.getItem("topScores");
@@ -27,17 +45,24 @@ function loadStoredScores(): Score[] {
   }
 }
 
-async function findStreetViewLocation(): Promise<Coordinates> {
+async function findStreetViewLocation(difficulty: Difficulty): Promise<Coordinates> {
+  const radius = SNAP_RADIUS_METERS[difficulty];
   for (let attempt = 0; attempt < 60; attempt++) {
-    const snapped = await nearestStreetView(randomCoordinates());
+    const snapped = await nearestStreetView(
+      randomCoordinatesForDifficulty(difficulty),
+      radius
+    );
     if (snapped) return snapped;
   }
-  return randomCoordinates();
+  // Never hand StreetView an un-snapped point (it would render a blank pano).
+  const fallback = await nearestStreetView(FALLBACK_LOCATION, 10000);
+  return fallback ?? FALLBACK_LOCATION;
 }
 
 export default function Game() {
   const navigate = useNavigate();
-  const [totalRounds] = useState(() => loadGameOptions().rounds);
+  const [options] = useState(loadGameOptions);
+  const totalRounds = options.rounds;
   const [round, setRound] = useState(1);
   const [totalScore, setTotalScore] = useState(0);
   const [targetLocation, setTargetLocation] = useState<Coordinates | null>(null);
@@ -47,16 +72,17 @@ export default function Game() {
 
   const isResult = result !== null;
   const isLastRound = round >= totalRounds;
+  const currentDifficulty = options.difficulties[round - 1];
 
   useEffect(() => {
     let active = true;
-    findStreetViewLocation().then((coords) => {
+    findStreetViewLocation(options.difficulties[0]).then((coords) => {
       if (active) setTargetLocation(coords);
     });
     return () => {
       active = false;
     };
-  }, []);
+  }, [options]);
 
   function saveTopScore(name: string, total: number) {
     const scores = loadStoredScores();
@@ -79,10 +105,11 @@ export default function Game() {
       setShowNameDialog(true);
       return;
     }
-    setRound((prev) => prev + 1);
+    const nextRound = round + 1;
+    setRound(nextRound);
     setResult(null);
     setTargetLocation(null);
-    findStreetViewLocation().then(setTargetLocation);
+    findStreetViewLocation(options.difficulties[nextRound - 1]).then(setTargetLocation);
   }
 
   function handleSaveScore(event: FormEvent) {
@@ -99,6 +126,9 @@ export default function Game() {
         </Link>
         <span className="game__hud-pill">
           Round <strong>{round}</strong> / {totalRounds}
+        </span>
+        <span className="game__hud-pill">
+          <strong>{DIFFICULTY_LABELS[currentDifficulty]}</strong>
         </span>
         <span className="game__hud-pill">
           Score <strong>{totalScore}</strong>
