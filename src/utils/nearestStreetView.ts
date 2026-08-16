@@ -7,9 +7,12 @@ type StreetViewMetadata = {
   location?: { lat: number; lng: number };
 };
 
-export default async function nearestStreetView(coords: Coordinates): Promise<Coordinates | null> {
+export default async function nearestStreetView(
+  coords: Coordinates,
+  radiusMeters = 5000
+): Promise<Coordinates | null> {
   const key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-  const url = `${api}?location=${coords.latitude},${coords.longitude}&radius=5000&source=outdoor&key=${key}`;
+  const url = `${api}?location=${coords.latitude},${coords.longitude}&radius=${radiusMeters}&source=outdoor&key=${key}`;
 
   const res = await fetch(url);
   if (!res.ok) return null;
