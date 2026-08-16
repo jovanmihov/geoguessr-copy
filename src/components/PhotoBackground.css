@@ -6,36 +6,20 @@
   background: var(--color-bg-end);
 }
 
-.photo-bg__track {
-  display: flex;
-  height: 100%;
-  width: max-content;
-  animation-name: photo-slide;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  will-change: transform;
-}
-
+/* Every photo is stacked full-screen; only the active one is opaque. */
 .photo-bg__slide {
-  flex: 0 0 auto;
+  position: absolute;
+  inset: 0;
+  width: 100%;
   height: 100%;
-}
-
-.photo-bg__slide img {
-  display: block;
-  height: 100%;
-  width: auto; /* keep each photo's natural aspect ratio; strips sit edge-to-edge */
   object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.6s ease-in-out;
   user-select: none;
 }
 
-@keyframes photo-slide {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%); /* one full set = seamless wrap */
-  }
+.photo-bg__slide.is-active {
+  opacity: 1;
 }
 
 /* Scrim: darken top and bottom for text legibility, plus a faint red wash to
@@ -54,9 +38,9 @@
     linear-gradient(0deg, rgba(158, 20, 24, 0.18), rgba(14, 10, 9, 0.3));
 }
 
-/* Respect users who ask their OS for reduced motion: hold on the first photo. */
+/* Respect users who ask their OS for reduced motion: no crossfade. */
 @media (prefers-reduced-motion: reduce) {
-  .photo-bg__track {
-    animation: none;
+  .photo-bg__slide {
+    transition: none;
   }
 }
