@@ -1,0 +1,245 @@
+/* ---------- Options trigger button ---------- */
+.options-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--color-surface-border);
+  border-radius: 999px;
+  padding: 0.65rem 1.6rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text);
+  background: var(--color-surface);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.options-button:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-primary-light);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.options-button__gear {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+/* ---------- Overlay + dialog card ---------- */
+.options-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(13, 9, 32, 0.72);
+  backdrop-filter: blur(6px);
+  animation: options-fade 0.25s ease;
+}
+
+@keyframes options-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.options-card {
+  width: min(94vw, 26rem);
+  max-height: 88vh;
+  overflow-y: auto;
+  text-align: left;
+  padding: 1.75rem;
+  border-radius: 1.25rem;
+  background: rgba(13, 9, 32, 0.94);
+  border: 1px solid var(--color-surface-border);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  animation: options-pop 0.3s ease;
+}
+
+@keyframes options-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.options-card__title {
+  margin-bottom: 1.5rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+/* ---------- Rounds dropdown ---------- */
+.options-card__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.options-card__field-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.options-card__select {
+  min-width: 5rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--color-surface-border);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.options-card__select:focus {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.3);
+}
+
+.options-card__select option {
+  color: #111;
+}
+
+/* ---------- Per-round difficulty rows ---------- */
+.options-card__rounds {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.round-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.round-row__label {
+  flex-shrink: 0;
+  width: 4.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* ---------- Sliding segmented control ---------- */
+.segmented {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-surface-border);
+}
+
+.segmented__indicator {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / 3);
+  border-radius: 5px;
+  pointer-events: none;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.segmented__indicator[data-level="easy"] {
+  background: linear-gradient(120deg, #34d399 0%, #10b981 100%);
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.65), 0 4px 10px rgba(16, 185, 129, 0.4);
+}
+
+.segmented__indicator[data-level="medium"] {
+  background: linear-gradient(120deg, #fbbf24 0%, #f59e0b 100%);
+  box-shadow: 0 0 16px rgba(251, 191, 36, 0.65), 0 4px 10px rgba(245, 158, 11, 0.4);
+}
+
+.segmented__indicator[data-level="hard"] {
+  background: linear-gradient(120deg, #fb7185 0%, #ef4444 100%);
+  box-shadow: 0 0 16px rgba(248, 113, 113, 0.65), 0 4px 10px rgba(239, 68, 68, 0.4);
+}
+
+.segmented__option {
+  position: relative;
+  z-index: 1;
+  border: none;
+  background: transparent;
+  padding: 0.5rem 0.25rem;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.segmented__option:hover {
+  color: var(--color-text);
+}
+
+.segmented__option.is-active {
+  color: var(--color-bg-end);
+}
+
+/* ---------- Dialog actions ---------- */
+.options-card__actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.options-card__cancel,
+.options-card__save {
+  flex: 1;
+  border-radius: 999px;
+  padding: 0.75rem 1.25rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.options-card__cancel {
+  border: 1px solid var(--color-surface-border);
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.options-card__cancel:hover {
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.options-card__save {
+  border: none;
+  color: var(--color-text);
+  background: linear-gradient(120deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  box-shadow: 0 8px 20px rgba(109, 40, 217, 0.45);
+}
+
+.options-card__save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(109, 40, 217, 0.6);
+}

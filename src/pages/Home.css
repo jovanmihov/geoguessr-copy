@@ -7,14 +7,6 @@
   width: 100%;
 }
 
-.home__hero-image {
-  width: 9rem;
-  height: auto;
-  margin-bottom: 1.5rem;
-  filter: drop-shadow(0 12px 24px rgba(139, 92, 246, 0.45));
-  animation: home-float 4s ease-in-out infinite;
-}
-
 .home__title {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 800;
@@ -31,17 +23,15 @@
   font-size: 1.05rem;
 }
 
+.home__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
 .home__scores {
   margin-top: 2.5rem;
   width: 100%;
-}
-
-@keyframes home-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
 }
