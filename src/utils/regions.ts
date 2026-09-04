@@ -144,13 +144,17 @@ const CITY_CENTERS: Place[] = [
 
 export const EASY_REGIONS: Region[] = [
   ...toRegions(CITY_CENTERS, 0.1),
-  ...toRegions(MONUMENTS, 0.2),
-  ...toRegions(LAKE_SHORES, 0.4),
+  ...toRegions(MONUMENTS, 0.1),
+  ...toRegions(LAKE_SHORES, 0.1),
 ];
 
 export const MEDIUM_REGIONS: Region[] = [
+  ...toRegions(CITY_CENTERS, 1),
+  ...toRegions(MONUMENTS, 1),
+  ...toRegions(LAKE_SHORES, 1),
+
   ...toRegions(BIG_CITIES, 3),
   ...toRegions(TOWNS, 1.2),
-  ...toRegions(LARGE_VILLAGES, 0.7),
+  ...toRegions(LARGE_VILLAGES, 0.5),
   ...toRegions(TOURIST, 0.8),
 ];
