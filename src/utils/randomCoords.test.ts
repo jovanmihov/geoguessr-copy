@@ -41,8 +41,34 @@ describe("randomCoordinatesForDifficulty", () => {
         "stays inside the border for %s",
         (difficulty) => {
             for (let i = 0; i < 20; i++) {
-                expect(isInside(randomCoordinatesForDifficulty(difficulty))).toBe(true);
+                expect(isInside(randomCoordinatesForDifficulty(difficulty).coordinates)).toBe(true);
             }
         }
     );
+
+    it.each(["easy", "medium"] as const)(
+        "never returns an excluded region name for %s",
+        (difficulty) => {
+            const regions = difficulty === "easy" ? EASY_REGIONS : MEDIUM_REGIONS;
+            const keep = regions[0].name;
+            const excluded = new Set(regions.map((r) => r.name).filter((name) => name !== keep));
+
+            for (let i = 0; i < 10; i++) {
+                const { regionName } = randomCoordinatesForDifficulty(difficulty, excluded);
+                expect(regionName).toBe(keep);
+            }
+        }
+    );
+
+    it("falls back to repeats once every region in a difficulty is excluded", () => {
+        const excluded = new Set(EASY_REGIONS.map((r) => r.name));
+        const { coordinates, regionName } = randomCoordinatesForDifficulty("easy", excluded);
+        expect(regionName).not.toBeNull();
+        expect(isInside(coordinates)).toBe(true);
+    });
+
+    it("ignores exclusions for hard, which has no named regions", () => {
+        const { regionName } = randomCoordinatesForDifficulty("hard", new Set(["anything"]));
+        expect(regionName).toBeNull();
+    });
 });

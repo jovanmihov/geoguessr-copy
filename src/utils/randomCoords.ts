@@ -45,10 +45,25 @@ function randomPointInRegion(region: Region): Coordinates {
     return region.center;
 }
 
-export function randomCoordinatesForDifficulty(difficulty: Difficulty): Coordinates {
-    if (difficulty === "hard") return randomCoordinates();
+export type DifficultyLocation = {
+    coordinates: Coordinates;
+    regionName: string | null;
+};
+
+// excludeNames lets a caller keep a location's named region (e.g. "Struga") from
+// repeating within a run. "hard" has no named regions, so it's exempt. If every
+// region in a difficulty has already been visited, repeats are allowed again
+// rather than narrowing the pool to nothing.
+export function randomCoordinatesForDifficulty(
+    difficulty: Difficulty,
+    excludeNames: ReadonlySet<string> = new Set()
+): DifficultyLocation {
+    if (difficulty === "hard") return { coordinates: randomCoordinates(), regionName: null };
 
     const regions = difficulty === "easy" ? EASY_REGIONS : MEDIUM_REGIONS;
-    const region = regions[Math.floor(Math.random() * regions.length)];
-    return randomPointInRegion(region);
+    const unvisited = regions.filter((region) => !excludeNames.has(region.name));
+    const pool = unvisited.length > 0 ? unvisited : regions;
+    const region = pool[Math.floor(Math.random() * pool.length)];
+
+    return { coordinates: randomPointInRegion(region), regionName: region.name };
 }

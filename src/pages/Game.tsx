@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import "./Game.css";
@@ -45,18 +45,21 @@ function loadStoredScores(): Score[] {
   }
 }
 
-async function findStreetViewLocation(difficulty: Difficulty): Promise<Coordinates> {
+type FoundLocation = { coordinates: Coordinates; regionName: string | null };
+
+async function findStreetViewLocation(
+  difficulty: Difficulty,
+  visitedRegions: ReadonlySet<string>
+): Promise<FoundLocation> {
   const radius = SNAP_RADIUS_METERS[difficulty];
   for (let attempt = 0; attempt < 60; attempt++) {
-    const snapped = await nearestStreetView(
-      randomCoordinatesForDifficulty(difficulty),
-      radius
-    );
-    if (snapped) return snapped;
+    const { coordinates, regionName } = randomCoordinatesForDifficulty(difficulty, visitedRegions);
+    const snapped = await nearestStreetView(coordinates, radius);
+    if (snapped) return { coordinates: snapped, regionName };
   }
   // Never hand StreetView an un-snapped point (it would render a blank pano).
   const fallback = await nearestStreetView(FALLBACK_LOCATION, 10000);
-  return fallback ?? FALLBACK_LOCATION;
+  return { coordinates: fallback ?? FALLBACK_LOCATION, regionName: null };
 }
 
 export default function Game() {
@@ -69,6 +72,7 @@ export default function Game() {
   const [result, setResult] = useState<RoundResult | null>(null);
   const [showNameDialog, setShowNameDialog] = useState(false);
   const [playerName, setPlayerName] = useState("");
+  const visitedRegions = useRef<Set<string>>(new Set());
 
   const isResult = result !== null;
   const isLastRound = round >= totalRounds;
@@ -76,9 +80,13 @@ export default function Game() {
 
   useEffect(() => {
     let active = true;
-    findStreetViewLocation(options.difficulties[0]).then((coords) => {
-      if (active) setTargetLocation(coords);
-    });
+    findStreetViewLocation(options.difficulties[0], visitedRegions.current).then(
+      ({ coordinates, regionName }) => {
+        if (!active) return;
+        if (regionName) visitedRegions.current.add(regionName);
+        setTargetLocation(coordinates);
+      }
+    );
     return () => {
       active = false;
     };
@@ -109,7 +117,12 @@ export default function Game() {
     setRound(nextRound);
     setResult(null);
     setTargetLocation(null);
-    findStreetViewLocation(options.difficulties[nextRound - 1]).then(setTargetLocation);
+    findStreetViewLocation(options.difficulties[nextRound - 1], visitedRegions.current).then(
+      ({ coordinates, regionName }) => {
+        if (regionName) visitedRegions.current.add(regionName);
+        setTargetLocation(coordinates);
+      }
+    );
   }
 
   function handleSaveScore(event: FormEvent) {

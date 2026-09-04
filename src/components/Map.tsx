@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AttributionControl, MapContainer, Marker, Polyline, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import type { Coordinates } from "../entities/Coordinates";
@@ -59,13 +59,30 @@ export default function Map({ targetLocation, phase, onSubmit }: MapProps) {
   const MACEDONIA_CENTER: [number, number] = [41.6, 21.72];
   const [guess, setGuess] = useState<Coordinates | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [pinnedOpen, setPinnedOpen] = useState(false);
+  const dockRef = useRef<HTMLDivElement>(null);
 
   const isResult = phase === "result";
+
+  // Once the user clicks the map, keep it expanded regardless of hover state —
+  // it should only collapse again when they click outside of it.
+  useEffect(() => {
+    if (!pinnedOpen || isResult) return;
+    function handlePointerDown(event: PointerEvent) {
+      if (dockRef.current && !dockRef.current.contains(event.target as Node)) {
+        setExpanded(false);
+        setPinnedOpen(false);
+      }
+    }
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [pinnedOpen, isResult]);
 
   function ClickHandler() {
     useMapEvents({
       click(e) {
         if (isResult) return;
+        setPinnedOpen(true);
         if (!expanded) {
           setExpanded(true);
           return;
@@ -84,9 +101,11 @@ export default function Map({ targetLocation, phase, onSubmit }: MapProps) {
 
   return (
     <div
+      ref={dockRef}
       className={dockClass}
       onMouseEnter={() => !isResult && setExpanded(true)}
-      onMouseLeave={() => !isResult && setExpanded(false)}
+      onMouseLeave={() => !isResult && !pinnedOpen && setExpanded(false)}
+      onMouseDown={() => !isResult && setPinnedOpen(true)}
     >
       <div className="map-dock__map-wrap">
         <MapContainer
