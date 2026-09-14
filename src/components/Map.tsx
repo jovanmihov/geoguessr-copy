@@ -64,8 +64,6 @@ export default function Map({ targetLocation, phase, onSubmit }: MapProps) {
 
   const isResult = phase === "result";
 
-  // Once the user clicks the map, keep it expanded regardless of hover state —
-  // it should only collapse again when they click outside of it.
   useEffect(() => {
     if (!pinnedOpen || isResult) return;
     function handlePointerDown(event: PointerEvent) {
